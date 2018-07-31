@@ -1,56 +1,50 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <title>Headlines</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-    <script type="text/javascript" src="JS/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
-    <script src="./JS/index.js"></script>
+	<script>
+
+		var ajaxRequest = new XMLHttpRequest();
+		function ajaxResponse1() {
+			if (ajaxRequest.readyState != 4)
+				return;
+			else {
+				if (ajaxRequest.status == 200) {
+					var response = JSON.parse(ajaxRequest.responseText);
+					var txt = "";
+					for (x in response) {
+						txt += "<li class='tab'>" + response[x][1] + "</li>";
+					}
+					document.getElementById("title").innerHTML = txt;
+					console.log(response);
+				}
+				else {
+					alert("Request failed: " + ajaxRequest.statusText);
+					console.log(ajaxRequest.responseText);
+				}
+			}
+		}
+
+		function rec() {
+
+			if (!ajaxRequest) {
+				document.getElementById("title").innerHTML = "Request error!";
+				return;
+			}
+			var myURL = "http://localhost:5000/";
+
+			ajaxRequest.onreadystatechange = ajaxResponse1;
+			ajaxRequest.open("GET", myURL);
+			ajaxRequest.send(null);
+		}
+
+
+
+	</script>
 </head>
 
-<body>
-    <div class="card">
-        <ul id="dropdown1" class="dropdown-content">
-            <li>
-                <a onclick="news('en')">English</a>
-            </li>
-            <li>
-                <a onclick="news('hi')">Hindi</a>
-            </li>
-            <li>
-                <a onclick="news('bn')">Bengali</a>
-            </li>
-            <li>
-                <a onclick="news('kn')">Kannada</a>
-            </li>
-        </ul>
-            <nav>
-                <div class="nav-wrapper">
-                    <a class="card-title">Headlines</a>
-                    <ul class="right">
-                        <li>
-                            <a class="dropdown-trigger" data-target="dropdown1">Select Language
-                                <i class="material-icons right">arrow_drop_down</i>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-            <div class="card-tabs">
-                <ul id="content" class="tabs tabs-fixed-width" onchange="headline(this.value)">
+<body onload="rec()">
 
-                </ul>
-            </div>
-    </div>
-    <div class="card">
-        <div id="news" class="card">
-
-
-        </div>
-    </div>
+	<div id="title"></div>
 </body>
 
 </html>
